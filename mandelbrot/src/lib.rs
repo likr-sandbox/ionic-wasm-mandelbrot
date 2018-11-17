@@ -1,3 +1,7 @@
+#![feature(extern_crate_item_prelude)]
+#![feature(test)]
+extern crate test;
+
 extern crate wasm_bindgen;
 
 use wasm_bindgen::prelude::*;
@@ -76,5 +80,19 @@ pub fn mandelbrot(screen: &mut Screen, x0: f64, y0: f64, d: f64, limit: usize) {
             x += d;
         }
         y += d;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use test::Bencher;
+
+    #[bench]
+    fn bench_mandelbrot(b: &mut Bencher) {
+        let mut screen = Screen::new(600, 400);
+        b.iter(|| {
+            mandelbrot(&mut screen, -3., -2., 0.01, 100);
+        });
     }
 }
